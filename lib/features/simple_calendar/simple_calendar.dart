@@ -62,7 +62,6 @@ class _SimpleCalendarState extends State<SimpleCalendar> {
   /// Get names of the week
   List<String> _getWeekName(int day) {
     int startAt = day - 1;
-    // default sunday
     List<String> weekNames = ['월', '화', '수', '목', '금', '토', '일'];
     //FIXME: 지역에 따라 다르게 설정하기
 
