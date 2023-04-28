@@ -109,9 +109,8 @@ class _SimpleCalendarState extends State<SimpleCalendar> {
     DateTime firstDayOfNextWeek = _statredDay.add(const Duration(days: 7));
     _statredDay = firstDayOfNextWeek;
 
-    int weekCount = 7;
     List<DateTime> week = [];
-    for (var i = 0; i < weekCount; i++) {
+    for (var i = 0; i < 7; i++) {
       week.add(firstDayOfNextWeek.add(Duration(days: i)));
     }
 
@@ -129,9 +128,8 @@ class _SimpleCalendarState extends State<SimpleCalendar> {
 
     _statredDay = firstDayOfPreviousWeek;
 
-    int weekCount = 7;
     List<DateTime> week = [];
-    for (var i = 0; i < weekCount; i++) {
+    for (var i = 0; i < 7; i++) {
       week.add(firstDayOfPreviousWeek.add(Duration(days: i)));
     }
 
@@ -156,7 +154,7 @@ class _SimpleCalendarState extends State<SimpleCalendar> {
               children: [
                 Text(
                   "$_showsYearName / $_showsMonthName",
-                  style: TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 ),
                 const Spacer(),
 
