@@ -5,15 +5,15 @@ import 'package:lab/features/simple_calendar/date_time.dart';
 import 'package:lab/features/simple_calendar/utils.dart';
 import 'package:lab/features/simple_calendar/widgets/dayOfWeek.dart';
 
-class SimpleCalendar extends StatefulWidget {
-  const SimpleCalendar({super.key});
+class SimpleCalendarMonth extends StatefulWidget {
+  const SimpleCalendarMonth({super.key});
 
   @override
-  State<SimpleCalendar> createState() => _SimpleCalendarState();
+  State<SimpleCalendarMonth> createState() => _SimpleCalendarMonthState();
 }
 
-class _SimpleCalendarState extends State<SimpleCalendar> {
-  String _dateType = "week"; // week, month
+class _SimpleCalendarMonthState extends State<SimpleCalendarMonth> {
+  String _dateType = "month"; // week, month
 
   List<DateTime> date = [];
 
@@ -27,13 +27,12 @@ class _SimpleCalendarState extends State<SimpleCalendar> {
   late List<String> _weekNames;
 
   /// Todays date
-  final DateTime _today = DateTime.utc(2023, 04, 27);
+  final DateTime _today = DateTime.utc(2023, 04, 28);
+
+  Map<int, List<DateTime>> _month = {};
 
   /// The Calendar displays the day of the week
-  List<DateTime> _daysOfWeek = [];
-
-  /// Started day of the your week
-  late DateTime _statredDay;
+  List<DateTime> currentMonth = [];
 
   /// Displays the current year
   String _showsYearName = "";
@@ -48,16 +47,17 @@ class _SimpleCalendarState extends State<SimpleCalendar> {
     // initializeDateFormatting('ko_KR', null);
     // print(DateFormat.EEEE('ko_KR').format(DateTime.now()));
 
+    // Displays the Current month
+    currentMonth = _getMonth(_today);
+
+    for (var day in currentMonth) print(day);
+
     // Get names of the week
     _weekNames = _getWeekName(_startWeekAt);
 
-    // Get fistday of your week
-    _statredDay = _getFirstDayOfWeek(_today);
-
     // Displays the Current Day info
-    _daysOfWeek = _getWeeks(_statredDay);
-    _showsYearName = _statredDay.year.toString();
-    _showsMonthName = _statredDay.month.toString();
+    _showsYearName = _today.year.toString();
+    _showsMonthName = _today.month.toString();
   }
 
   /// Get names of the week
@@ -78,69 +78,32 @@ class _SimpleCalendarState extends State<SimpleCalendar> {
     return newWeekNames;
   }
 
-  /// Get fist day of your week
-  DateTime _getFirstDayOfWeek(DateTime day) {
-    DateTime firstDayOfWeek =
-        day.subtract(Duration(days: day.weekday - _startWeekAt));
+  // Get month
+  List<DateTime> _getMonth(DateTime _today) {
+    int firstDay = DateTime(_today.year, _today.month, 1).day;
+    int lastDay = DateTime(_today.year, _today.month + 1, 0).day;
+    List<DateTime> days = [];
 
-    if (_startWeekAt > day.weekday) {
-      // 예) 현재 목요일인데 시작지정일이 금요일부터면 이전주 금요일 부터 가져와야 한다.
-      // 공식 : 이전주 + (시작요일 - 현재요일)
+    DateTime.utc(_today.year, _today.month, _today.day);
 
-      DateTime dayOfBeforeWeek = day.subtract(const Duration(days: 7));
-      firstDayOfWeek =
-          dayOfBeforeWeek.add(Duration(days: _startWeekAt - day.weekday));
+    int weekNumber = 1;
+    List<DateTime> daysOfWeek = [];
+    for (int i = 1; i <= lastDay; i++) {
+      print(i);
+      // _month.addAll({5: });
+      if (i % 7 == 0) {
+        weekNumber++;
+        print("weekNumber ${weekNumber}");
+      }
+      // days.add(DateTime.utc(_today.year, _today.month, i));
     }
 
-    return firstDayOfWeek;
+    return days;
   }
 
-  /// Get days of your week
-  List<DateTime> _getWeeks(DateTime day) {
-    List<DateTime> week = [];
+  void _getPrevMonth() {}
 
-    for (var i = 0; i < 7; i++) {
-      week.add(day.add(Duration(days: i)));
-    }
-
-    return week;
-  }
-
-  /// Get days next week
-  void _getNextWeeks() {
-    DateTime firstDayOfNextWeek = _statredDay.add(const Duration(days: 7));
-    _statredDay = firstDayOfNextWeek;
-
-    List<DateTime> week = [];
-    for (var i = 0; i < 7; i++) {
-      week.add(firstDayOfNextWeek.add(Duration(days: i)));
-    }
-
-    setState(() {
-      _showsYearName = _statredDay.year.toString();
-      _showsMonthName = _statredDay.month.toString();
-      _daysOfWeek = week;
-    });
-  }
-
-  /// Get days previous week
-  void _getPrevWeeks() {
-    DateTime firstDayOfPreviousWeek =
-        _statredDay.subtract(const Duration(days: 7));
-
-    _statredDay = firstDayOfPreviousWeek;
-
-    List<DateTime> week = [];
-    for (var i = 0; i < 7; i++) {
-      week.add(firstDayOfPreviousWeek.add(Duration(days: i)));
-    }
-
-    setState(() {
-      _showsYearName = _statredDay.year.toString();
-      _showsMonthName = _statredDay.month.toString();
-      _daysOfWeek = week;
-    });
-  }
+  void _getNextMonth() {}
 
   @override
   Widget build(BuildContext context) {
@@ -163,13 +126,13 @@ class _SimpleCalendarState extends State<SimpleCalendar> {
                 /// Prev Week BUtton
                 IconButton(
                   icon: const Icon(Icons.chevron_left),
-                  onPressed: _getPrevWeeks,
+                  onPressed: _getPrevMonth,
                 ),
 
                 /// Next Week Button
                 IconButton(
                   icon: const Icon(Icons.chevron_right),
-                  onPressed: _getNextWeeks,
+                  onPressed: _getNextMonth,
                 ),
                 GestureDetector(
                   onTap: () => print("change"),
@@ -213,9 +176,9 @@ class _SimpleCalendarState extends State<SimpleCalendar> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                for (var day in _daysOfWeek)
+                for (int i = 0; i < currentMonth.length; i++)
                   DayOfWeek(
-                    name: convertDateTimeToDay(day),
+                    name: convertDateTimeToDay(currentMonth[i]),
                   ),
               ],
             ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lab/features/future_builder/future_builder.dart';
 import 'package:lab/features/simple_calendar/simple_calendar.dart';
+import 'package:lab/features/simple_calendar/simple_calendar_month.dart';
 import 'package:lab/features/stream_builder/stream_builder.dart';
+import 'package:lab/pakages_lab/table_calendar/table_calendar_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const SimpleCalendar(),
+      home: const TableCalendarScreen(),
     );
   }
 }
